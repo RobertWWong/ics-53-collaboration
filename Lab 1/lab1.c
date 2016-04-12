@@ -30,10 +30,10 @@ void read (char * read_file){	//arg is a string
 	{
 		strcpy (temp.str, buff);
 		global_c [cnt++] = temp;
-		printf("Current we have this %s\n", buff);		//think of printf as your format, they will appear at your % signs specifically.
+	//	printf("Current we have this %s\n", buff);		//think of printf as your format, they will appear at your % signs specifically.
 		//fgets (buff, 255, (FILE*)fp); //don't understand the (FILE*) part
 	}
-	strcat (global_c[cnt - 1].str, endline);
+	strcat (global_c[cnt - 1].str, endline);	//The end of the file doesn't have newline.
 	
 	fclose(fp);
 }
@@ -41,8 +41,8 @@ void read (char * read_file){	//arg is a string
 void write (char * write_file ){
  // Write a record file to disk which contains the records currently stored in memory using data structures of your choice. 
  // This command takes one argument, the name of the record file to be written to disk. The command does not print any output. 
-	extern struct string global_c[];
-	extern int cnt;
+	//extern struct string global_c[];
+	//extern int cnt;
 	printf ("writing to %s \n", write_file);
 
 	FILE *fp;
@@ -71,24 +71,47 @@ void print () {
 	printf("");
 }
 
-void delete (int recNum) {
+void deletes (int recNum) {
 	// Deletes a record from the your memory store. This command takes one argument which is the number of the record to be deleted. 
 	// Note that the remaining records should be renumbered from 1 so that there is not a gap in the record numbering.
 
+	if (recNum > cnt)
+	{
+		printf("There are no records past %i\n", recNum );
+		return;
+	}
+	int i = 0;
+	while ( i < cnt)
+	{
+		if (i >= (cnt - 1) )
+			while (i < cnt)
+			{
+				struct string temp = global_c[i];
+				if ( (i + 1) <= recNum)	//if we have passed the desired point, we keep swapping until the end, but make sure we don't exceed it
+				{
+				global_c[i] = global_c[i + 1]; 
+				global_c[i+1] = temp;
+				}
+			}
+		i++;
+	}
+
+	
 }
 
 void quit() {
-
+	quit;
 }
+char str[100];
 
 char * input(){
 	//accept and returns user inputs as strings
-	char str[100];
+	memset (&str[0],0, sizeof(str));		//very important, need to reset that character array.
 	scanf("%s", str);
 	return str;
 }
 
-enum CMD {RD = 'r', WD= 'w', PRT= 'p', DEL= 'd', QUIT ='q'};
+enum CMD {RD = 'r', WD= 'w', PRT= 'p', DELE= 'd', QUIT ='q'};
 int main(){
 
 	printf("Starting Program addrs: \n");
@@ -116,11 +139,14 @@ int main(){
 			printf("printing\n");
 			print();
 			break;
-		case DEL:
-			printf ("deleteing\n");
+		case DELE:
+			printf ("Delete a number between 1 and %i \n", cnt);
+			int de = getchar();
+			deletes(de);
 			break;
 		case QUIT:
 			printf("Quiting\n");
+			quit();
 			break;
 		default:
 			printf("Invalid Command\n");
