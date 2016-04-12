@@ -1,7 +1,12 @@
+//Robertww (callmemaybe)
+
 #include "stdio.h"
 #include <string.h>
 
-//taking a long time to compile and i don't know why. Is it because of the for loop?
+//taking a long time to compile with std=c99 i don't know why. Is it because of large library?
+
+
+//global variables here
 	struct string {
 		char str[100];
 	};
@@ -16,17 +21,19 @@
 void read (char * read_file){	//arg is a string
 	// Read a record file from disk and represent its contents in memory using data structures of your choosing.
 	// This command takes one argument, the name of a record file to be read. This command does not print any output. 
-	extern struct string global_c[];
-	extern int cnt;
 	
+	/*extern struct string global_c[];
+	extern int cnt;*/
+	cnt = 0;
+	memset (&global_c[0],0, sizeof( global_c)) ;
 	struct string temp;
 
-	printf ("Reading from %s\n\n", read_file);
+	//printf ("Reading from %s\n\n", read_file);
 
 	FILE *fp;
 	char buff [255];
 	fp = fopen(read_file, "r");
-	while (fgets (buff, 255, (FILE*)fp))
+	while (fgets (buff, 255, (FILE*)fp) && cnt <100)
 	{
 		strcpy (temp.str, buff);
 		global_c [cnt++] = temp;
@@ -43,7 +50,7 @@ void write (char * write_file ){
  // This command takes one argument, the name of the record file to be written to disk. The command does not print any output. 
 	//extern struct string global_c[];
 	//extern int cnt;
-	printf ("writing to %s \n", write_file);
+	//printf ("writing to %s \n", write_file);
 
 	FILE *fp;
 	fp = fopen(write_file, "a");
@@ -65,29 +72,31 @@ void print () {
 	//for (int i = 0; i <cnt; i++){
 	int i = 0;
 	while (i <cnt){
-		printf("%d %s", i+1, global_c[i].str );
+		printf("%d\t %s", i+1, global_c[i].str );
 		i++;
 	}
-	printf("");
+	//printf("\n");
 }
 
-void deletes (int recNum) {
+void delete (int num) {
 	// Deletes a record from the your memory store. This command takes one argument which is the number of the record to be deleted. 
 	// Note that the remaining records should be renumbered from 1 so that there is not a gap in the record numbering.
 
-	if (recNum > cnt)
+	if (num > cnt)
 	{
-		printf("There are no records past %i\n", recNum );
+		printf("There are no records past %i\n", num );
 		return;
 	}
+	// else
+	// 	printf ("What is this? %i\n and the count %i", num, cnt);
+
 	int i = 0;
 	while ( i < cnt)
 	{
-		if (i >= (cnt - 1) )
-			while (i < cnt)
+		if (i >= (num - 1) )
 			{
 				struct string temp = global_c[i];
-				if ( (i + 1) <= recNum)	//if we have passed the desired point, we keep swapping until the end, but make sure we don't exceed it
+				if ( (i + 1) <= num)	//if we have passed the desired point, we keep swapping until the end, but make sure we don't exceed it
 				{
 				global_c[i] = global_c[i + 1]; 
 				global_c[i+1] = temp;
@@ -95,13 +104,17 @@ void deletes (int recNum) {
 			}
 		i++;
 	}
+	
+	cnt--;
+	
 
 	
 }
 
 void quit() {
-	quit;
+	exit(0);
 }
+
 char str[100];
 
 char * input(){
@@ -118,13 +131,14 @@ int main(){
 	
 	char * text ;
 	int c;
-	while (c != 'q')
+	while (c != EOF)
 	{
-	printf("Commands are: \n(r)ead\n(w)rite\n(p)rint\n(d)elete\n(q)uit\n");
+	//printf("Commands are: \n(r)ead\n(w)rite\n(p)rint\n(d)elete\n(q)uit\n");
 	printf ("Your command: ");
 	c = getchar();	//will only read as many string as you input it
-	enum CMD COM = c;
-	switch (COM){
+	//enum CMD COM;
+
+	switch (c){
 		case RD:
 			printf("Enter text file to read:\n");
 			text = input();
@@ -141,20 +155,16 @@ int main(){
 			break;
 		case DELE:
 			printf ("Delete a number between 1 and %i \n", cnt);
-			int de = getchar();
-			deletes(de);
+			int num;
+			scanf ("%i", &num);
+			delete(num);
 			break;
 		case QUIT:
 			printf("Quiting\n");
 			quit();
 			break;
-		default:
-			printf("Invalid Command\n");
 
 	}
-	//printf("%s", str);	//will return just one string
-
-
 }
   
   
