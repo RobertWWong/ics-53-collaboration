@@ -1,0 +1,18 @@
+#include "stdio.h"
+
+
+/*
+quit();
+background();
+foreground();
+*/
+
+
+//GO TO BOOK TO LOOK FOR A SHELL EXAMPLE.
+
+
+int main() {
+
+
+	return 0;
+}
